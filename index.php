@@ -20,14 +20,14 @@ $hotels = [
     [
         'name' => 'Hotel Rivamare',
         'description' => 'Hotel Rivamare Descrizione',
-        'parking' => false,
+        'parking' => "false",
         'vote' => 1,
         'distance_to_center' => 1
     ],
     [
         'name' => 'Hotel Bellavista',
         'description' => 'Hotel Bellavista Descrizione',
-        'parking' => false,
+        'parking' => "false",
         'vote' => 5,
         'distance_to_center' => 5.5
     ],
@@ -41,6 +41,37 @@ $hotels = [
 
 ];
 
+
+$hasfilter = isset($_GET["parking"]) || isset($_GET["vote"]);
+// ARRAY PER HOTEL FILTRATI
+$hotelfiltrati = [];
+
+// se hai inserito un valore di input
+if ($hasfilter) {
+    // faccio un ciclo sul singolo elemnento dell'array multidimensionale
+    foreach ($hotels as $hotel) {
+        $pushHotel = true;
+        // se il valore inserito è SI associ valore TRUE
+        if($_GET["parking"] === "si"){
+            $_GET["parking"] = true;
+            // se il valore inserito è NO associ valore FALSE
+        }elseif($_GET["parking"] === "no"){
+            $_GET["parking"] = "false";
+        }
+        if (isset($_GET["parking"]) && !str_contains($hotel["parking"], $_GET["parking"])) {
+            $pushHotel = false;
+        }
+         // viene mostrato l'hotel che ha un punteggio superiore al numero inserito 
+        if (isset($_GET["vote"]) && $hotel["vote"] < $_GET["vote"]) {
+            $pushHotel = false;
+        }
+        if ($pushHotel) {
+            $hotelsFilter[] = $hotel;
+        }
+    }
+}else{
+    $hotelsFilter = $hotels;
+}
 
 
 ?>
@@ -67,13 +98,22 @@ $hotels = [
     <div class="container text-white">
         <h1>Hotel PHP</h1>
 
-        <form method="GET" class="my-5 border p-3">
+        <form action="" method="GET" class="my-5 border p-3">
             <div class="row">
                 <div class="col-6">
                     <div class="mb-5">
                         <!-- filtro in base alla disponibiltà del parcheggio -->
                         <label class="form-label">inserisci SI o No se desideri il parcheggio</label>
-                        <input type="text" class="form-control" name="parking" value="<?php echo $_GET["parking"] ?? '' ?>">
+                        
+                        <input type="text" class="form-control" name="parking" 
+                         value="<?php  if($_GET["parking"]=== true){
+                            echo "si";
+                        }elseif($_GET["parking"]=== "false"){
+                            echo "no";
+                        }else{
+                            echo "";
+                        }
+                          ?>"> 
 
                     </div>
                 </div>
@@ -106,9 +146,9 @@ $hotels = [
             </thead>
             <!-- contenuto tabella -->
             <tbody>
-                
+                <!-- Mostro la tabella in base all'array HotelFiltarati -->
                 <?php
-                foreach ($hotels as $hotel) {
+                foreach ($hotelsFilter as $hotel) {
                 ?>
                     <tr>
                         <td><?php echo $hotel["name"] ?></td>
