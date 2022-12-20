@@ -42,15 +42,6 @@ $hotels = [
 ];
 
 
-// ARRAY PER HOTEL FILTRATI
-$hotelfiltrati = [];
-
-// se il nome è presente e l'hotel è presente nell'array lo aggiunge all'array degli hotel filtarti
-foreach ($hotels as $hotel) {
-    if (isset($_GET["name"]) && str_contains(strtolower($hotel["name"]), strtolower($_GET["name"]))) {
-        $hotelfiltrati[] = $hotel;
-    }
-}
 
 ?>
 
@@ -76,13 +67,14 @@ foreach ($hotels as $hotel) {
     <div class="container text-white">
         <h1>Hotel PHP</h1>
 
-        <form action="" method="GET" class="my-5 border p-3">
+        <form method="GET" class="my-5 border p-3">
             <div class="row">
                 <div class="col-6">
-                    <div class="mb-3">
-                        <!-- filtro nome -->
-                        <label class="form-label">Nome Hotel</label>
-                        <input type="text" class="form-control" name="name" value="<?php echo $_GET["name"] ?? '' ?>">
+                    <div class="mb-5">
+                        <!-- filtro in base alla disponibiltà del parcheggio -->
+                        <label class="form-label">inserisci SI o No se desideri il parcheggio</label>
+                        <input type="text" class="form-control" name="parking" value="<?php echo $_GET["parking"] ?? '' ?>">
+
                     </div>
                 </div>
 
@@ -96,7 +88,7 @@ foreach ($hotels as $hotel) {
             </div>
             <!-- bottoni -->
             <!-- quando clicco annulla ricarico la pagina originale -->
-            <a class="btn btn-secondary" href="hotel.php">Annulla</a>
+            <a class="btn btn-secondary" href="index.php">Annulla</a>
             <button class="btn btn-primary">Cerca</button>
         </form>
 
@@ -114,15 +106,20 @@ foreach ($hotels as $hotel) {
             </thead>
             <!-- contenuto tabella -->
             <tbody>
-               <!-- Mostro la tabella in base all'array HotelFiltarati -->
+                
                 <?php
-                foreach ($hotelfiltrati as $hotel) {
+                foreach ($hotels as $hotel) {
                 ?>
                     <tr>
                         <td><?php echo $hotel["name"] ?></td>
                         <td><?php echo $hotel["description"] ?></td>
-                        <td><?php echo $hotel["parking"] ?></td>
-                        <td><?php echo $hotel["vote"] ?></td>
+                        <td><?php if ($hotel["parking"] === true) {
+                                echo "disponibile";
+                            } else {
+                                echo "non disponibile";
+                            }
+                            ?></td>
+                        <td><?php echo $hotel["vote"] . "&#9733" ?></td>
                         <td><?php echo $hotel["distance_to_center"] ?></td>
 
                     </tr>
